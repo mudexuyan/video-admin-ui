@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-var service_name='users'
+var service_name='videos'
 
 export function getList(token) {
   return request({

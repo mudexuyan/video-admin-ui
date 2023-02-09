@@ -1,75 +1,86 @@
 <template>
   <el-table
-    :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-    style="width: 100%">
-    <el-table-column
-      label="Date"
-      prop="date">
+    :data="tableData.filter(data => !search || data.phone.includes(search) || data.name.toLowerCase().includes(search.toLowerCase()))"
+    style="width: 94%">
+    <el-table-column label="Id">
+      <template slot-scope="scope " style="margin-left: 20;">
+        {{ scope.row.id }}
+      </template>
     </el-table-column>
-    <el-table-column
-      label="Name"
-      prop="name">
+    <el-table-column label="Name">
+      <template slot-scope="scope">
+        <el-popover trigger="hover" placement="top">
+          <p>简介: {{ scope.row.intro }}</p>
+          <p>关注数: {{ scope.row.followingCount }}</p>
+          <p>粉丝数: {{ scope.row.followersCount }}</p>
+          <div slot="reference" class="name-wrapper">
+            <el-tag size="medium">{{ scope.row.name }}</el-tag>
+          </div>
+        </el-popover>
+      </template>
     </el-table-column>
-    <el-table-column
-      label="分类"
-      prop="category">
+    <el-table-column label="Avatar" prop="avatar">
+      <template slot-scope="scope">
+        <el-image style="width: 40px; height: 40px" :src="scope.row.avatar" fit="fit"></el-image>
+      </template>
     </el-table-column>
-    <el-table-column
-      label="状态"
-      prop="state">
+    <el-table-column label="Phone" prop="phone">
     </el-table-column>
-    <el-table-column
-      align="right">
+    <el-table-column align="right">
       <template slot="header" slot-scope="scope">
-        <el-input
-          v-model="search"
-          size="mini"
-          placeholder="输入关键字搜索"/>
+        <el-input v-model="search" size="mini" placeholder="输入姓名或手机号搜索" />
       </template>
       <template slot-scope="scope">
-        <el-button
-          size="mini"
-          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        <el-switch style="display: block" v-model="value" active-color="#13ce66" inactive-color="#ff4949"
+          active-text="正常" inactive-text="停用">
+        </el-switch>
+        <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" style="margin-left: 10px;">Edit</el-button>
+        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button> -->
       </template>
     </el-table-column>
   </el-table>
 </template>
 
+
+
+  
 <script>
-  export default {
-    data() {
-      return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        search: ''
-      }
+import { getList, getOne } from '@/api/user.js'
+import { getToken } from '@/utils/auth' // get token from cookie
+const token = getToken()
+export default {
+  data() {
+    return {
+      tableData: [],
+      count: 0,
+      search: '',
+      value: true,
+
+    }
+  },
+  //页面加载调用
+  created() {
+    this.getData(token)
+  },
+
+  methods: {
+
+    getData(token) {
+      getList(token).then(res => {
+        console.log(res)
+
+        this.tableData = res.items
+        this.count = res.total_count
+      })
     },
-    methods: {
-      handleEdit(index, row) {
-        console.log(index, row);
-      },
-      handleDelete(index, row) {
-        console.log(index, row);
-      }
+    handleEdit(index, row) {
+      console.log(index, row);
     },
-  }
+    handleDelete(index, row) {
+      console.log(index, row);
+    }
+
+  },
+}
 </script>
+

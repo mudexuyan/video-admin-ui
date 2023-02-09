@@ -46,7 +46,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    // redirect: '/dashboard',
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
@@ -86,7 +86,7 @@ export const constantRoutes = [
       path: 'list',
       name: 'Video',
       component: () => import('@/views/video/list'),
-      meta: { title: '用户管理', icon: 'el-icon-video-camera' }
+      meta: { title: '视频管理', icon: 'el-icon-video-camera' }
     }]
   },
 

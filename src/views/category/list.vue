@@ -15,10 +15,11 @@
         </el-form-item>
 
         <el-form-item class="button">
-          <el-button type="primary" @click="onSubmit">保存分类信息</el-button>
+          <el-button type="primary" @click="onSave">新建分类信息</el-button>
           <el-button @click="onCancel">取消</el-button>
         </el-form-item>
       </el-form>
+      
     </el-card>
 
     <el-table class="list" :data="tableData" style="width: 100%" :max-height="500" row-key="id" default-expand-all
@@ -31,8 +32,35 @@
 
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-popover placement="left" width="370" :ref="`popover-${scope.row.id}`">
+          <div>
+              <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item class="type" label="分类名称" :rules="[
+                  { required: true, message: '名称不能为空' }
+                ]">
+                  <el-input v-model="editForm.name" style="width: 204px" placeholder="请输入分类名称" clearable></el-input>
+                </el-form-item>
+
+                <el-form-item class="parent" label="父级分类">
+                  <el-cascader :options="tableData" v-model="editForm.parent_id"
+                    :props="{ checkStrictly: true, label: 'name', value: 'id', emitPath: false }" clearable filterable
+                    placeholder="不选时为根分类"></el-cascader>
+                </el-form-item>
+
+                <el-form-item class="button">
+                  <el-button @click="onEditCancel(scope.$index, scope.row)">取消</el-button>
+                  <el-button type="primary" @click="onEdit(scope.$index, scope.row)">保存分类信息</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
+
+          <el-button slot="reference" size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          </el-popover>
+
+      
+
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
+            style="margin-left: 4px;">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,6 +77,10 @@ export default {
     return {
       tableData: [],
       form: {
+        name: '',
+        parent_id: '',
+      },
+      editForm: {
         name: '',
         parent_id: '',
       },
@@ -69,8 +101,7 @@ export default {
     },
 
     handleEdit(index, row) {
-      this.form.name = row.name
-      console.log(index, row);
+      this.editForm = row
     },
 
     handleDelete(index, row) {
@@ -81,13 +112,13 @@ export default {
       } else {
 
         del(row.id, token).then((res) => {
-         //刷新表格
-         this.getData(token)
+          //刷新表格
+          this.getData(token)
         })
       }
     },
 
-    onSubmit() {
+    onSave() {
       add(this.form, token).then((res) => {
         console.log(res.name)
         if (res.name) {
@@ -104,11 +135,33 @@ export default {
           this.$message.error('信息保存失败');
         }
       })
+    },
+
+    onEdit(index, row) {
+      edit(row.id, this.editForm, token).then((res) => {
+        if (res.name) {
+          this.$message({
+            message: '信息保存成功',
+            type: 'success'
+          });
+
+          //刷新表格
+          this.getData(token)
+
+        } else {
+          this.$message.error('信息保存失败');
+        }
+      })
+      this.$refs["popover-"+row.id].showPopper = false
 
     },
     onCancel() {
-      console.log("cancel")
-      this.form.name = ''
+      this.form = {}
+    },
+    onEditCancel(index,row) {
+      this.editForm = {},
+
+      this.$refs["popover-"+row.id].showPopper = false
     },
 
   },
@@ -122,6 +175,7 @@ export default {
 
 .list {
   margin-top: 16px;
+
 }
 
 .text {

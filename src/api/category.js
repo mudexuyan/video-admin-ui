@@ -7,7 +7,6 @@ export function getList(token) {
     url: '/'+service_name,
     method: 'get',
     params: { token },
-    token
   })
 }
 
@@ -27,11 +26,12 @@ export function add(data,token) {
   })
 }
 
-export function edit(id) {
+export function edit(id,data,token) {
   return request({
-    url:  '/'+service_name+'/'+id,
+    url:  `/${service_name}/${id}`,
     method: 'patch',
     params: { token },
+    data
   })
 }
 
