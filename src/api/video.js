@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 var service_name='videos'
 
-export function getList(token) {
+export function getAllVideos(token) {
   return request({
     url: '/'+service_name,
     method: 'get',
@@ -10,7 +10,7 @@ export function getList(token) {
   })
 }
 
-export function getOne(data,token) {
+export function getOneVideo(data,token) {
   return request({
     url: '/'+service_name,
     method: 'get',
@@ -19,3 +19,11 @@ export function getOne(data,token) {
   })
 }
 
+export function editVideo(id,data,token) {
+    return request({
+      url:  `/${service_name}/${id}`,
+      method: 'patch',
+      params: { token },
+      data
+    })
+  }

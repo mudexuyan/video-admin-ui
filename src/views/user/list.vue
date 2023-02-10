@@ -19,7 +19,7 @@
         </el-popover>
       </template>
     </el-table-column>
-    <el-table-column label="Avatar" prop="avatar">
+    <el-table-column label="头像" prop="avatar">
       <template slot-scope="scope">
         <el-image style="width: 40px; height: 40px" :src="scope.row.avatar" fit="fit"></el-image>
       </template>
@@ -31,7 +31,7 @@
         <el-input v-model="search" size="mini" placeholder="输入姓名或手机号搜索" />
       </template>
       <template slot-scope="scope">
-        <el-switch style="display: block" v-model="value" active-color="#13ce66" inactive-color="#ff4949"
+        <el-switch style="display: block" v-model="scope.row.phone_linked" active-color="#13ce66" inactive-color="#ff4949" 
           active-text="正常" inactive-text="停用">
         </el-switch>
         <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" style="margin-left: 10px;">Edit</el-button>
@@ -54,13 +54,12 @@ export default {
       tableData: [],
       count: 0,
       search: '',
-      value: true,
-
     }
   },
   //页面加载调用
   created() {
     this.getData(token)
+    console.log(this.tableData)
   },
 
   methods: {
@@ -73,12 +72,7 @@ export default {
         this.count = res.total_count
       })
     },
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(index, row);
-    }
+   
 
   },
 }

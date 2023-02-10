@@ -34,7 +34,7 @@
         <template slot-scope="scope">
           <el-popover placement="left" width="370" :ref="`popover-${scope.row.id}`">
           <div>
-              <el-form ref="form" :model="form" label-width="80px">
+              <el-form ref="form"  label-width="80px">
                 <el-form-item class="type" label="分类名称" :rules="[
                   { required: true, message: '名称不能为空' }
                 ]">
