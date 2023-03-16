@@ -1,11 +1,17 @@
 <template>
+  
+    
+
 
   <div>
+    
+
+
     <!-- <el-button @click="resetDateFilter">清除日期过滤器</el-button> -->
     <el-button @click="clearFilter">清除所有过滤器</el-button>
 
     <el-table ref="filterTable" :data="tableData.filter(data => !search || data.title.includes(search) || data.uploader.name.includes(search)
-    || data.category.includes(search))" style="width: 94%">
+      || data.category.includes(search))" style="width: 94%" :key="Math.random()"> 
       <el-table-column prop="updated_at" label="日期" sortable width="220" column-key="datetime" :filters=filterDate
         :filter-method="filterHandler">
       </el-table-column>
@@ -64,7 +70,7 @@
         <template slot-scope="scope">
           <el-popover placement="left" width="370" :ref="`popover-${scope.row.id}`">
             <div>
-              <el-form ref="form" label-width="80px" >
+              <el-form ref="form" label-width="80px">
                 <el-form-item label="分类" style="height: 26px; margin-top: 10px;">
                   <el-cascader :options="categoryData" v-model="editForm.category_id"
                     :props="{ checkStrictly: true, label: 'name', value: 'id', emitPath: false }" clearable filterable
@@ -85,15 +91,17 @@
         </template>
       </el-table-column>
 
-
-
     </el-table>
+
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage2"
+      :page-sizes="[5, 10, 20, 50]" :page-size="100" layout="sizes, prev, pager, next" :total="count">
+    </el-pagination>
   </div>
 </template>
 
 <script>
-import { getAllVideos, getOneVideo,editVideo } from '@/api/video.js'
-import { getList} from '@/api/category.js'
+import { getAllVideos, getOneVideo, editVideo } from '@/api/video.js'
+import { getList } from '@/api/category.js'
 import { getToken } from '@/utils/auth' // get token from cookie
 const token = getToken()
 export default {
@@ -160,23 +168,23 @@ export default {
           this.$message.error('信息保存失败');
         }
       })
-      this.$refs["popover-"+row.id].showPopper = false
+      this.$refs["popover-" + row.id].showPopper = false
       this.editForm = {}
 
     },
 
-    onEditCancel(index,row) {
-      this.$refs["popover-"+row.id].showPopper = false
+    onEditCancel(index, row) {
+      this.$refs["popover-" + row.id].showPopper = false
     },
-    
+
     handleEdit(index, row) {
       // this.editForm = row
     },
-    
+
     clearFilter() {
       this.$refs.filterTable.clearFilter();
     },
-    
+
     //表格条件筛选
     filterTag(value, row) {
       return row.category === value;

@@ -27,3 +27,11 @@ export function editVideo(id,data,token) {
       data
     })
   }
+export function model(data,token) {
+    return request({
+      url:  `/${service_name}/model`,
+      method: 'post',
+      params: { token },
+      data
+    })
+  }

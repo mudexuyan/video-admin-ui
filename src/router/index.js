@@ -89,6 +89,17 @@ export const constantRoutes = [
       meta: { title: '视频管理', icon: 'el-icon-video-camera' }
     }]
   },
+  {
+    path: '/model',
+    component: Layout,
+    redirect: '/model/list',
+    children: [{
+      path: 'list',
+      name: 'Model',
+      component: () => import('@/views/model/list'),
+      meta: { title: '模型测试', icon: 'el-icon-video-play' }
+    }]
+  },
 
  
   // 404 page must be placed at the end !!!
